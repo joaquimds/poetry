@@ -30,6 +30,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', '').lower() == 'true'
 
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
+
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 
@@ -144,6 +146,6 @@ CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME")
 
 DEFAULT_FILE_STORAGE = (
     "django.core.files.storage.FileSystemStorage"
-    if DEBUG
+    if ENVIRONMENT == 'DEVELOPMENT'
     else "collection.storage.cloudinary.CloudinaryStorage"
 )
