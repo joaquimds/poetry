@@ -1,5 +1,4 @@
 from django.db import models
-from tinymce.models import HTMLField
 
 class Author(models.Model):
     name = models.CharField(max_length=128)

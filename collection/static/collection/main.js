@@ -1,6 +1,7 @@
 const $form = document.querySelector('form')
 const $search = $form.querySelector('input')
 const $container = document.querySelector('main ul')
+const $spinner = document.getElementById('spinner')
 
 const debounce = (callback) => {
     let timeout = null
@@ -15,10 +16,12 @@ const debounce = (callback) => {
 }
 
 const search = async () => {
+    $spinner.style.display = 'block'
     const search = $search.value
     const response = await fetch(`/api/poems?s=${encodeURIComponent(search)}`)
     const poems = await response.json()
     render(poems)
+    $spinner.style.display = 'none'
 }
 
 const masonry = new window.Masonry($container, {
@@ -92,6 +95,10 @@ const render = (poems) => {
             masonry.layout()
         })
 
+        $image.addEventListener('error', () => {
+            masonry.layout()
+        })
+
         $overlay.appendChild($title)
         $overlay.appendChild($author)
         $article.appendChild($image)
@@ -102,8 +109,7 @@ const render = (poems) => {
         items[poem.id] = $item
         added.push($item)
     }
-    masonry.addItems(added)
-    masonry.layout()
+    masonry.appended(added)
 }
 
 $form.addEventListener("submit", (e) => {

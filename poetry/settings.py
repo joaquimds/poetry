@@ -10,7 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+from urllib.parse import urlparse
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,13 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-xecqus(tkz_nr)bx1s=mbgj^603hk$%ydxc(xg5qngfsnl_j^-"
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', '').lower() == 'true'
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 
 # Application definition
@@ -37,7 +42,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "tinymce",
     "collection",
 ]
 
@@ -73,14 +77,18 @@ TEMPLATES = [
 WSGI_APPLICATION = "poetry.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+DATABASE_URL = os.environ.get("DATABASE_URL")
+PARSED_DATABASE_URL = urlparse(DATABASE_URL)
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": PARSED_DATABASE_URL.path[1:],
+        "USER": PARSED_DATABASE_URL.username,
+        "PASSWORD": PARSED_DATABASE_URL.password,
+        "HOST": PARSED_DATABASE_URL.hostname,
+        "PORT": PARSED_DATABASE_URL.port,
+    },
 }
 
 
@@ -128,3 +136,23 @@ MEDIA_URL = "uploads/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Cloudinary
+CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
+CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET")
+CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME")
+
+DEFAULT_STORAGE_BACKEND = (
+    "django.core.files.storage.FileSystemStorage"
+    if DEBUG
+    else "collection.storage.cloudinary.CloudinaryStorage"
+)
+
+STORAGES = {
+    "default": {
+        "BACKEND": DEFAULT_STORAGE_BACKEND,
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
