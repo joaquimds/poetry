@@ -142,17 +142,8 @@ CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
 CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET")
 CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME")
 
-DEFAULT_STORAGE_BACKEND = (
+DEFAULT_FILE_STORAGE = (
     "django.core.files.storage.FileSystemStorage"
     if DEBUG
     else "collection.storage.cloudinary.CloudinaryStorage"
 )
-
-STORAGES = {
-    "default": {
-        "BACKEND": DEFAULT_STORAGE_BACKEND,
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
