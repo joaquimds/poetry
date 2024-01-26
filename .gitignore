@@ -1,0 +1,10 @@
+__pycache__
+
+.env
+db.sqlite3
+
+public/*
+!public/.gitkeep
+
+uploads/*
+!uploads/.gitkeep
