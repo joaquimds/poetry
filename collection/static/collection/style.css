@@ -100,7 +100,7 @@ ul {
 }
 
 .overlay {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     color: #ddd;
     display: flex;
     flex-direction: column;
