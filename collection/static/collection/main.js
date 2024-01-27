@@ -28,6 +28,27 @@ const masonry = new window.Masonry($container, {
     itemSelector: '.grid-item'
 })
 
+
+const getTransformOrigin = ($item) => {
+    const windowWidth = window.innerWidth
+    if (windowWidth < 600) {
+        return 'center'
+    }
+    const $parent = $item.closest('li')
+    const left = Number($parent.style.left.replace('px', ''))
+    if (windowWidth < 900) {
+        return left < 1 ? 'left' : 'right'
+    }
+    const halfWidth = Math.floor(windowWidth / 3)
+    if (left === 0) {
+        return 'left'
+    }
+    if (left > halfWidth) {
+        return 'right'
+    }
+    return 'center'
+}
+
 window.addEventListener('click', (e) => {
     const $items = $container.querySelectorAll('article')
     for (const $item of $items) {
@@ -43,6 +64,7 @@ window.addEventListener('click', (e) => {
                     })
                 } else {
                     $item.setAttribute('data-focussed', true)
+                    $item.style.transformOrigin = getTransformOrigin($item)
                 }
             }
         } else {

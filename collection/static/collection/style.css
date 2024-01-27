@@ -72,14 +72,6 @@ ul {
     .grid-item {
         width: 50%;
     }
-
-    li:nth-child(2n + 1) article {
-        transform-origin: left;
-    }
-
-    li:nth-child(2n) article {
-        transform-origin: right;
-    }
 }
 
 @media (min-width: 900px) {
@@ -89,18 +81,6 @@ ul {
 
     .grid-item {
         width: 33%;
-    }
-
-    li:nth-child(3n + 1) article {
-        transform-origin: left;
-    }
-
-    li:nth-child(3n + 2) article {
-        transform-origin: center;
-    }
-
-    li:nth-child(3n) article {
-        transform-origin: right;
     }
 }
 
