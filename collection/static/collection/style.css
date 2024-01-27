@@ -5,8 +5,11 @@
 
 html,
 body {
-    box-sizing: border-box;
     font-family: 'EB Garamond', serif;
+}
+
+body {
+    background-color: #eee;
 }
 
 a {
@@ -21,6 +24,7 @@ a:hover {
 article {
     display: flex;
     flex-direction: column;
+    margin: 0.5rem;
     position: relative;
     transition: transform 1s;
     transform: scale(1);
@@ -44,6 +48,22 @@ input {
     padding: 0.5rem;
 }
 
+main {
+    padding: 0 1.5rem;
+    position: relative;
+}
+
+nav {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+}
+
+ul {
+    list-style: none;
+}
+
 .grid-item {
     width: 100%;
 }
@@ -63,6 +83,10 @@ input {
 }
 
 @media (min-width: 900px) {
+    main {
+        padding: 0 1rem 0 1.5rem
+    }
+
     .grid-item {
         width: 33%;
     }
@@ -78,21 +102,6 @@ input {
     li:nth-child(3n) article {
         transform-origin: right;
     }
-}
-
-main {
-    padding: 0 2rem;
-    position: relative;
-}
-
-nav {
-    display: flex;
-    justify-content: space-between;
-    padding: 2rem;
-}
-
-ul {
-    list-style: none;
 }
 
 #spinner {
