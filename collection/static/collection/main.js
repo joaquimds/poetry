@@ -25,17 +25,25 @@ const search = async () => {
 }
 
 const masonry = new window.Masonry($container, {
-    itemSelector: '.grid-item',
-    columnWidth: '.grid-sizer'
+    itemSelector: '.grid-item'
 })
 
 window.addEventListener('click', (e) => {
     const $items = $container.querySelectorAll('article')
     for (const $item of $items) {
         if ($item.contains(e.target)) {
-            if (!$item.getAttribute('data-focussed')) {
+            const $link = $item.querySelector('a')
+            if (!$link.contains(e.target)) {
                 e.preventDefault()
-                $item.setAttribute('data-focussed', true)
+                if ($item.getAttribute('data-focussed')) {
+                    $item.style.zIndex = 3;
+                    $item.removeAttribute('data-focussed')
+                    $item.addEventListener("transitionend", () => {
+                        $item.style.zIndex = ""
+                    })
+                } else {
+                    $item.setAttribute('data-focussed', true)
+                }
             }
         } else {
             $item.removeAttribute('data-focussed')
@@ -69,26 +77,35 @@ const render = (poems) => {
     for (const poem of toAdd) {
         const $item = document.createElement('li')
         const $article = document.createElement('article')
-        const $overlay = document.createElement('a')
+        const $overlay = document.createElement('div')
+        const $link = document.createElement('a')
         const $title = document.createElement('h2')
         const $image = document.createElement('img')
         const $author = document.createElement('h3')
 
         $item.setAttribute('class', 'grid-item')
         $overlay.setAttribute('class', 'overlay')
-        $overlay.setAttribute('href', poem.link)
-        $overlay.setAttribute('target', '_blank')
         $title.innerText = poem.title
         $image.setAttribute('src', poem.image)
         $image.setAttribute('alt', poem.body)
         $author.innerText = poem.author
+        $link.setAttribute('href', poem.link)
+        $link.setAttribute('target', '_blank')
 
         $overlay.addEventListener('mouseenter', () => {
-            $overlay.style.opacity = 1
+            $overlay.setAttribute('data-visible', true)
         })
 
         $overlay.addEventListener('mouseleave', () => {
-            $overlay.style.opacity = 0
+            $overlay.removeAttribute('data-visible')
+        })
+
+        $link.addEventListener('mouseenter', () => {
+            $overlay.setAttribute('data-force-visible', true)
+        })
+
+        $link.addEventListener('mouseleave', () => {
+            $overlay.removeAttribute('data-force-visible')
         })
 
         $image.addEventListener('load', () => {
@@ -99,8 +116,9 @@ const render = (poems) => {
             masonry.layout()
         })
 
-        $overlay.appendChild($title)
-        $overlay.appendChild($author)
+        $link.appendChild($title)
+        $link.appendChild($author)
+        $overlay.appendChild($link)
         $article.appendChild($image)
         $article.appendChild($overlay)
 
