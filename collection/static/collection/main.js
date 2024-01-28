@@ -15,6 +15,19 @@ const debounce = (callback) => {
     }
 }
 
+const undebounce = (callback) => {
+    let skip = false
+    return (...args) => {
+        if (!skip) {
+            skip = true
+            callback(...args)
+            setTimeout(() => {
+                skip = false
+            }, 200)
+        }
+    }
+}
+
 const search = async () => {
     $spinner.style.display = 'block'
     const search = $search.value
@@ -49,26 +62,32 @@ const getTransformOrigin = ($item) => {
     return 'center'
 }
 
+const doArticleStateTransition = undebounce(($article) => {
+    const state = $article.getAttribute('data-state') || 'default'
+    let nextState = 'default'
+    switch (state) {
+        case 'default':
+            nextState = 'focussed'
+            break
+        case 'focussed':
+            nextState = 'attribution'
+            break
+        case 'attribution':
+        default:
+    }
+    $article.setAttribute('data-state', nextState)
+})
+
 window.addEventListener('click', (e) => {
-    const $items = $container.querySelectorAll('article')
-    for (const $item of $items) {
-        if ($item.contains(e.target)) {
-            const $link = $item.querySelector('a')
+    const $articles = $container.querySelectorAll('article')
+    for (const $article of $articles) {
+        if ($article.contains(e.target)) {
+            $link = $article.querySelector('a')
             if (!$link.contains(e.target)) {
-                e.preventDefault()
-                if ($item.getAttribute('data-focussed')) {
-                    $item.style.zIndex = 3;
-                    $item.removeAttribute('data-focussed')
-                    $item.addEventListener("transitionend", () => {
-                        $item.style.zIndex = ""
-                    })
-                } else {
-                    $item.setAttribute('data-focussed', true)
-                    $item.style.transformOrigin = getTransformOrigin($item)
-                }
+                doArticleStateTransition($article)
             }
         } else {
-            $item.removeAttribute('data-focussed')
+            $article.removeAttribute('data-state')
         }
     }
 })
@@ -114,20 +133,12 @@ const render = (poems) => {
         $link.setAttribute('href', poem.link)
         $link.setAttribute('target', '_blank')
 
-        $overlay.addEventListener('mouseenter', () => {
-            $overlay.setAttribute('data-visible', true)
+        $article.addEventListener('mouseenter', () => {
+            doArticleStateTransition($article)
         })
 
-        $overlay.addEventListener('mouseleave', () => {
-            $overlay.removeAttribute('data-visible')
-        })
-
-        $link.addEventListener('mouseenter', () => {
-            $overlay.setAttribute('data-force-visible', true)
-        })
-
-        $link.addEventListener('mouseleave', () => {
-            $overlay.removeAttribute('data-force-visible')
+        $article.addEventListener('mouseleave', () => {
+            $article.removeAttribute('data-state')
         })
 
         $image.addEventListener('load', () => {

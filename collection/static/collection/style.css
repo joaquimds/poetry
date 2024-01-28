@@ -31,9 +31,22 @@ article {
     z-index: 1;
 }
 
-article[data-focussed] {
+article a {
+    display: none;
+}
+
+article[data-state="focussed"],
+article[data-state="attribution"] {
     transform: scale(1.25);
     z-index: 2;
+}
+
+article[data-state="attribution"] a {
+    display: block;
+}
+
+article[data-state="attribution"] .overlay {
+    opacity: 1;
 }
 
 footer {
@@ -120,16 +133,4 @@ ul {
     position: absolute;
     transition: opacity 1s;
     width: calc(100% - 1rem);
-}
-
-.overlay[data-visible] {
-    opacity: 1;
-}
-
-article[data-focussed] .overlay[data-visible] {
-    opacity: 0;
-}
-
-article[data-focussed] .overlay[data-force-visible] {
-    opacity: 1 !important;
 }
