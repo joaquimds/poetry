@@ -28,6 +28,9 @@ class Poem(models.Model):
     tags = models.ManyToManyField(to=Tag)
     link = models.CharField(max_length=1024, blank=True)
 
+    class Meta:
+        ordering = ["title"]
+
     def __str__(self):
         return f"{self.title} by {self.author}"
     
