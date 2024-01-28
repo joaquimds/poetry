@@ -35,17 +35,16 @@ article a {
     display: none;
 }
 
-article[data-state="focussed"],
-article[data-state="attribution"] {
+article[data-focussed] {
     transform: scale(1.25);
     z-index: 2;
 }
 
-article[data-state="attribution"] a {
+article[data-attribution]:not([data-focussed]) a {
     display: block;
 }
 
-article[data-state="attribution"] .overlay {
+article[data-attribution]:not([data-focussed]) .overlay {
     opacity: 1;
 }
 

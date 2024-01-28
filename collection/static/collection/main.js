@@ -62,32 +62,24 @@ const getTransformOrigin = ($item) => {
     return 'center'
 }
 
-const doArticleStateTransition = undebounce(($article) => {
-    const state = $article.getAttribute('data-state') || 'default'
-    let nextState = 'default'
-    switch (state) {
-        case 'default':
-            nextState = 'focussed'
-            break
-        case 'focussed':
-            nextState = 'attribution'
-            break
-        case 'attribution':
-        default:
-    }
-    $article.setAttribute('data-state', nextState)
-})
-
 window.addEventListener('click', (e) => {
     const $articles = $container.querySelectorAll('article')
     for (const $article of $articles) {
         if ($article.contains(e.target)) {
             $link = $article.querySelector('a')
             if (!$link.contains(e.target)) {
-                doArticleStateTransition($article)
+                if ($article.getAttribute('data-focussed')) {
+                    $article.removeAttribute('data-focussed')
+                    $article.style.zIndex = 3;
+                    $article.addEventListener("transitionend", () => {
+                        $article.style.zIndex = ""
+                    })
+                } else {
+                    $article.setAttribute('data-focussed', true)
+                }
             }
         } else {
-            $article.removeAttribute('data-state')
+            $article.removeAttribute('data-focussed')
         }
     }
 })
@@ -131,14 +123,16 @@ const render = (poems) => {
         $image.setAttribute('alt', poem.body)
         $author.innerText = poem.author
         $link.setAttribute('href', poem.link)
+        $link.setAttribute('role', 'link')
         $link.setAttribute('target', '_blank')
+        $link.setAttribute('rel', 'noopener noreferrer nofollow')
 
         $article.addEventListener('mouseenter', () => {
-            doArticleStateTransition($article)
+            $article.setAttribute('data-attribution', true)
         })
 
         $article.addEventListener('mouseleave', () => {
-            $article.removeAttribute('data-state')
+            $article.removeAttribute('data-attribution')
         })
 
         $image.addEventListener('load', () => {
