@@ -65,6 +65,7 @@ window.addEventListener('click', (e) => {
                         $article.style.zIndex = ""
                     })
                 } else {
+                    $article.style.transformOrigin = getTransformOrigin($article)
                     $article.setAttribute(attributeToToggle, true)
                 }
             }
