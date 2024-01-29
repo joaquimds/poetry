@@ -1,3 +1,5 @@
+const isMobile = ('ontouchstart' in document.documentElement)
+
 const $form = document.querySelector('form')
 const $search = $form.querySelector('input')
 const $container = document.querySelector('main ul')
@@ -12,19 +14,6 @@ const debounce = (callback) => {
         timeout = setTimeout(() => {
             callback()
         }, 200)
-    }
-}
-
-const undebounce = (callback) => {
-    let skip = false
-    return (...args) => {
-        if (!skip) {
-            skip = true
-            callback(...args)
-            setTimeout(() => {
-                skip = false
-            }, 200)
-        }
     }
 }
 
@@ -63,23 +52,24 @@ const getTransformOrigin = ($item) => {
 }
 
 window.addEventListener('click', (e) => {
+    const attributeToToggle = isMobile ? 'data-attribution' : 'data-focussed'
     const $articles = $container.querySelectorAll('article')
     for (const $article of $articles) {
         if ($article.contains(e.target)) {
             $link = $article.querySelector('a')
             if (!$link.contains(e.target)) {
-                if ($article.getAttribute('data-focussed')) {
-                    $article.removeAttribute('data-focussed')
+                if ($article.getAttribute(attributeToToggle)) {
+                    $article.removeAttribute(attributeToToggle)
                     $article.style.zIndex = 3;
                     $article.addEventListener("transitionend", () => {
                         $article.style.zIndex = ""
                     })
                 } else {
-                    $article.setAttribute('data-focussed', true)
+                    $article.setAttribute(attributeToToggle, true)
                 }
             }
         } else {
-            $article.removeAttribute('data-focussed')
+            $article.removeAttribute(attributeToToggle)
         }
     }
 })
@@ -127,13 +117,15 @@ const render = (poems) => {
         $link.setAttribute('target', '_blank')
         $link.setAttribute('rel', 'noopener noreferrer nofollow')
 
-        $article.addEventListener('mouseenter', () => {
-            $article.setAttribute('data-attribution', true)
-        })
+        if (!isMobile) {
+            $article.addEventListener('mouseenter', () => {
+                $article.setAttribute('data-attribution', true)
+            })
 
-        $article.addEventListener('mouseleave', () => {
-            $article.removeAttribute('data-attribution')
-        })
+            $article.addEventListener('mouseleave', () => {
+                $article.removeAttribute('data-attribution')
+            })
+        }
 
         $image.addEventListener('load', () => {
             masonry.layout()
