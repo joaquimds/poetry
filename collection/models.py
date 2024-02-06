@@ -1,7 +1,7 @@
 from django.db import models
 
 class Author(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
 
     class Meta:
         ordering = ["name"]
@@ -11,7 +11,7 @@ class Author(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
 
     class Meta:
         ordering = ["name"]
